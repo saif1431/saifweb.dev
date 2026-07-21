@@ -1,127 +1,115 @@
 import { motion } from "motion/react";
 import Section from "./ui/Section";
-import { HiCode, HiLightningBolt, HiCube } from "react-icons/hi";
+import RevealText from "./ui/RevealText";
+import { SITE, ABOUT } from "../content/site";
 
 const About = () => {
-      const highlights = [
-            {
-                  icon: HiCode,
-                  title: "Clean Code",
-                  description: "Writing maintainable, scalable code following best practices"
-            },
-            {
-                  icon: HiLightningBolt,
-                  title: "Fast Performance",
-                  description: "Optimizing applications for speed and efficiency"
-            },
-            {
-                  icon: HiCube,
-                  title: "Modern Stack",
-                  description: "Using cutting-edge technologies and frameworks"
-            }
-      ];
+  const [leadParagraph, ...restParagraphs] = ABOUT.paragraphs;
 
-      return (
-            <Section id="about" className="bg-muted/20">
-                  <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                        {/* Left: Image */}
-                        <motion.div
-                              initial={{ opacity: 0, x: -30 }}
-                              whileInView={{ opacity: 1, x: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.6 }}
-                              className="relative order-2 lg:order-1"
-                        >
-                              <div className="relative">
-                                    {/* Decorative Background */}
-                                    <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 to-indigo-400/20 rounded-2xl blur-2xl opacity-50" />
+  return (
+    <Section id="about" ariaLabelledby="about-heading">
+      <div className="max-w-5xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center gap-4 mb-6"
+        >
+          <span className="font-mono text-sm text-primary">01</span>
+          <span className="h-px flex-1 bg-border" />
+          <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            About
+          </span>
+        </motion.div>
 
-                                    {/* Image */}
-                                    <div className="relative w-full max-w-md mx-auto lg:mx-0">
-                                          <div className="aspect-square rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
-                                                <img
-                                                      src="/portfolioImg2.jpg"
-                                                      alt="About Saif Ahmed"
-                                                      className="w-full h-full object-cover"
-                                                />
-                                          </div>
+        <RevealText
+          id="about-heading"
+          text="Building digital products with purpose"
+          className="mb-12 max-w-3xl text-foreground"
+        />
 
-                                          {/* Accent Border */}
-                                          <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-primary/30 rounded-2xl -z-10" />
-                                    </div>
-                              </div>
-                        </motion.div>
+        <div className="grid md:grid-cols-12 gap-x-10 gap-y-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="md:col-span-7"
+          >
+            <p className="text-xl sm:text-2xl font-light leading-snug text-foreground mb-6">
+              {leadParagraph}
+            </p>
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
+              {restParagraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+              ))}
+            </div>
 
-                        {/* Right: Content */}
-                        <motion.div
-                              initial={{ opacity: 0, x: 30 }}
-                              whileInView={{ opacity: 1, x: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 0.6 }}
-                              className="order-1 lg:order-2"
-                        >
-                              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
-                                    About Me
-                              </h2>
+            <div className="mt-10 pt-8 border-t border-border">
+              <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-4">
+                Works comfortably with
+              </p>
+              <p className="flex flex-wrap gap-x-2 gap-y-2 font-mono text-sm text-muted-foreground">
+                {ABOUT.techStack.map((tech, i) => (
+                  <span key={tech}>
+                    <span className="hover:text-primary transition-colors cursor-default">
+                      {tech}
+                    </span>
+                    {i < ABOUT.techStack.length - 1 && (
+                      <span className="text-border ml-2" aria-hidden="true">
+                        /
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </p>
+            </div>
+          </motion.div>
 
-                              <div className="space-y-4 text-muted-foreground text-base leading-relaxed mb-8">
-                                    <p>
-                                          I'm a passionate full-stack developer with a strong focus on creating
-                                          exceptional digital experiences. With expertise in modern web technologies,
-                                          I transform ideas into elegant, functional applications.
-                                    </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="md:col-span-5"
+          >
+            <dl className="grid grid-cols-3 md:grid-cols-1 divide-x md:divide-x-0 md:divide-y divide-border border border-border rounded-lg overflow-hidden mb-8">
+              {SITE.stats.map((stat) => (
+                <div key={stat.label} className="p-5 md:flex md:items-baseline md:justify-between">
+                  <dt className="text-xs uppercase tracking-widest text-muted-foreground order-2 md:order-1 mt-1 md:mt-0">
+                    {stat.label}
+                  </dt>
+                  <dd className="text-3xl font-bold text-primary font-mono order-1 md:order-2">
+                    {stat.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
 
-                                    <p>
-                                          My journey in web development began with a curiosity for how things work
-                                          on the internet. Since then, I've worked on diverse projects ranging from
-                                          e-commerce platforms to enterprise applications, always striving to deliver
-                                          high-quality, user-centered solutions.
-                                    </p>
-
-                                    <p>
-                                          I believe in writing clean, maintainable code and staying updated with
-                                          the latest industry trends. When I'm not coding, you'll find me exploring
-                                          new technologies, contributing to open-source projects, or sharing knowledge
-                                          with the developer community.
-                                    </p>
-                              </div>
-
-                              {/* Highlights */}
-                              <div className="grid md:grid-cols-3 gap-4 mb-8">
-                                    {highlights.map((item, index) => (
-                                          <motion.div
-                                                key={item.title}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                whileInView={{ opacity: 1, y: 0 }}
-                                                viewport={{ once: true }}
-                                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                                className="bg-muted/30 border border-white/5 rounded-lg p-4 hover:border-primary/30 transition-colors"
-                                          >
-                                                <item.icon className="text-primary text-3xl mb-2" />
-                                                <h3 className="text-foreground font-semibold text-sm mb-1">{item.title}</h3>
-                                                <p className="text-muted-foreground text-xs leading-relaxed">{item.description}</p>
-                                          </motion.div>
-                                    ))}
-                              </div>
-
-                              {/* Tech Stack */}
-                              <div>
-                                    <h3 className="text-foreground font-semibold mb-3">Technologies I work with:</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                          {['React', 'Next.js', 'TypeScript', 'Node.js', 'Tailwind CSS', 'PostgreSQL', 'MongoDB', 'Express'].map((tech) => (
-                                                <span
-                                                      key={tech}
-                                                      className="px-3 py-1.5 text-sm font-mono bg-primary/10 text-primary rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors"
-                                                >
-                                                      {tech}
-                                                </span>
-                                          ))}
-                                    </div>
-                              </div>
-                        </motion.div>
+            <ol className="space-y-0">
+              {ABOUT.highlights.map((item, index) => (
+                <li
+                  key={item.title}
+                  className="flex gap-4 py-4 border-t border-border last:border-b"
+                >
+                  <span className="font-mono text-xs text-primary pt-0.5 shrink-0">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="text-foreground font-semibold text-sm mb-1">{item.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
-            </Section>
-      );
+                </li>
+              ))}
+            </ol>
+          </motion.div>
+        </div>
+      </div>
+    </Section>
+  );
 };
 
 export default About;
