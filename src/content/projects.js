@@ -13,7 +13,7 @@ export const PROJECTS = [
     featured: true,
     github: null,
     demo: "https://stock-tracker-one-smoky.vercel.app/login",
-    image: "/projects/stock-analyzer.png",
+    image: "/projects/stock-analyzer.webp",
     gradient: "from-emerald-600/40 to-green-900/60",
   },
   {
@@ -28,7 +28,7 @@ export const PROJECTS = [
     featured: false,
     github: null,
     demo: "https://kraf-tell.vercel.app/",
-    image: "/projects/kraftell.png",
+    image: "/projects/kraftell.webp",
     gradient: "from-slate-600/40 to-blue-900/60",
   },
   {
@@ -43,7 +43,7 @@ export const PROJECTS = [
     featured: true,
     github: null,
     demo: "https://pak-live-job-5i67.vercel.app/",
-    image: "/projects/pakjoblive.png",
+    image: "/projects/pakjoblive.webp",
     gradient: "from-orange-600/40 to-red-900/60",
   },
   {
@@ -73,7 +73,7 @@ export const PROJECTS = [
     featured: false,
     github: null,
     demo: null,
-    image: "/projects/ericsson-5g-quest-map.png",
+    image: "/projects/ericsson-5g-quest-map.webp",
     gradient: "from-indigo-600/40 to-slate-900/60",
   },
   {
@@ -88,7 +88,7 @@ export const PROJECTS = [
     featured: false,
     github: null,
     demo: "https://leads-nite.vercel.app/",
-    image: "/projects/leadnite.png",
+    image: "/projects/leadnite.webp",
     gradient: "from-cyan-600/40 to-slate-900/60",
   },
   {
@@ -103,7 +103,7 @@ export const PROJECTS = [
     featured: false,
     github: null,
     demo: "https://weddingaisle.co.uk/",
-    image: "/projects/wedding-aisle.png",
+    image: "/projects/wedding-aisle.webp",
     gradient: "from-rose-600/40 to-pink-900/60",
   },
   {
@@ -118,7 +118,7 @@ export const PROJECTS = [
     featured: false,
     github: null,
     demo: "https://verocta.vercel.app/product",
-    image: "/projects/verocta.png",
+    image: "/projects/verocta.webp",
     gradient: "from-indigo-600/40 to-blue-900/60",
   },
   {
@@ -148,7 +148,7 @@ export const PROJECTS = [
     featured: false,
     github: null,
     demo: "https://thehuddle.netlify.app/",
-    image: "/projects/the-huddle.png",
+    image: "/projects/the-huddle.webp",
     gradient: "from-violet-600/40 to-purple-900/60",
   },
   {
