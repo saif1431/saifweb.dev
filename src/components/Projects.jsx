@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Section from "./ui/Section";
 import Card from "./ui/Card";
@@ -7,23 +7,10 @@ import Dialog from "./ui/Dialog";
 import Button from "./ui/Button";
 import RevealText from "./ui/RevealText";
 import TiltCard from "./ui/TiltCard";
-import { HiExternalLink, HiCode, HiSparkles, HiEye } from "react-icons/hi";
+import { HiExternalLink, HiCode, HiSparkles, HiEye, HiPlay } from "react-icons/hi";
 import { PROJECTS, PROJECT_CATEGORIES } from "../content/projects";
 
-const ProjectImage = ({ project }) => {
-  if (project.image) {
-    return (
-      <img
-        src={project.image}
-        alt={`Screenshot of ${project.title} project`}
-        loading="lazy"
-        width={800}
-        height={450}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      />
-    );
-  }
-
+const ProjectInitials = ({ project }) => {
   const initials = project.title
     .split(" ")
     .map((w) => w[0])
@@ -39,6 +26,85 @@ const ProjectImage = ({ project }) => {
       <span className="text-4xl font-bold text-foreground/30 font-mono">{initials}</span>
     </div>
   );
+};
+
+// Card preview: hover-to-play, muted, no controls, image as poster/fallback.
+const ProjectImage = ({ project }) => {
+  const videoRef = useRef(null);
+
+  if (project.video) {
+    return (
+      <div className="relative w-full h-full">
+        <video
+          ref={videoRef}
+          src={project.video}
+          poster={project.image || undefined}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onMouseEnter={(e) => e.currentTarget.play()}
+          onMouseLeave={(e) => {
+            e.currentTarget.pause();
+            e.currentTarget.currentTime = 0;
+          }}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        >
+          Sorry, your browser doesn't support embedded videos.
+        </video>
+        <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur-sm text-xs font-medium text-foreground pointer-events-none">
+          <HiPlay className="w-3 h-3" aria-hidden="true" />
+          Video preview
+        </div>
+      </div>
+    );
+  }
+
+  if (project.image) {
+    return (
+      <img
+        src={project.image}
+        alt={`Screenshot of ${project.title} project`}
+        loading="lazy"
+        width={800}
+        height={450}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      />
+    );
+  }
+
+  return <ProjectInitials project={project} />;
+};
+
+// Case-study modal: full player with controls and sound, falls back to image/initials.
+const ProjectMediaLarge = ({ project }) => {
+  if (project.video) {
+    return (
+      <video
+        src={project.video}
+        poster={project.image || undefined}
+        controls
+        playsInline
+        preload="metadata"
+        className="w-full h-full object-contain bg-black"
+      >
+        Sorry, your browser doesn't support embedded videos.
+      </video>
+    );
+  }
+
+  if (project.image) {
+    return (
+      <img
+        src={project.image}
+        alt={`Screenshot of ${project.title} project`}
+        loading="lazy"
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+
+  return <ProjectInitials project={project} />;
 };
 
 const Projects = () => {
@@ -194,7 +260,7 @@ const Projects = () => {
         {selectedProject && (
           <div className="space-y-6">
             <div className="aspect-video rounded-lg overflow-hidden border border-border">
-              <ProjectImage project={selectedProject} />
+              <ProjectMediaLarge project={selectedProject} />
             </div>
             <p className="text-muted-foreground leading-relaxed">{selectedProject.longDescription}</p>
             <div>
