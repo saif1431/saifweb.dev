@@ -1,14 +1,14 @@
-import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { gsap, useGSAP } from "../lib/gsap";
 import Section from "./ui/Section";
-import Card from "./ui/Card";
 import Badge from "./ui/Badge";
 import Dialog from "./ui/Dialog";
 import Button from "./ui/Button";
 import RevealText from "./ui/RevealText";
-import TiltCard from "./ui/TiltCard";
-import { HiExternalLink, HiCode, HiSparkles, HiEye, HiPlay } from "react-icons/hi";
+import { HiExternalLink, HiCode } from "react-icons/hi";
+import { HiSparkles, HiArrowUpRight } from "react-icons/hi2";
 import { PROJECTS, PROJECT_CATEGORIES } from "../content/projects";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 const ProjectInitials = ({ project }) => {
   const initials = project.title
@@ -23,60 +23,11 @@ const ProjectInitials = ({ project }) => {
       className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${project.gradient}`}
       aria-hidden="true"
     >
-      <span className="text-4xl font-bold text-foreground/30 font-mono">{initials}</span>
+      <span className="text-2xl font-display font-semibold text-foreground/40">{initials}</span>
     </div>
   );
 };
 
-// Card preview: hover-to-play, muted, no controls, image as poster/fallback.
-const ProjectImage = ({ project }) => {
-  const videoRef = useRef(null);
-
-  if (project.video) {
-    return (
-      <div className="relative w-full h-full">
-        <video
-          ref={videoRef}
-          src={project.video}
-          poster={project.image || undefined}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          onMouseEnter={(e) => e.currentTarget.play()}
-          onMouseLeave={(e) => {
-            e.currentTarget.pause();
-            e.currentTarget.currentTime = 0;
-          }}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        >
-          Sorry, your browser doesn't support embedded videos.
-        </video>
-        <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur-sm text-xs font-medium text-foreground pointer-events-none">
-          <HiPlay className="w-3 h-3" aria-hidden="true" />
-          Video preview
-        </div>
-      </div>
-    );
-  }
-
-  if (project.image) {
-    return (
-      <img
-        src={project.image}
-        alt={`Screenshot of ${project.title} project`}
-        loading="lazy"
-        width={800}
-        height={450}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      />
-    );
-  }
-
-  return <ProjectInitials project={project} />;
-};
-
-// Case-study modal: full player with controls and sound, falls back to image/initials.
 const ProjectMediaLarge = ({ project }) => {
   if (project.video) {
     return (
@@ -88,7 +39,7 @@ const ProjectMediaLarge = ({ project }) => {
         preload="metadata"
         className="w-full h-full object-contain bg-black"
       >
-        Sorry, your browser doesn't support embedded videos.
+        Sorry, your browser doesn&apos;t support embedded videos.
       </video>
     );
   }
@@ -107,156 +58,182 @@ const ProjectMediaLarge = ({ project }) => {
   return <ProjectInitials project={project} />;
 };
 
+const ProjectRow = ({ project, index, onSelect, onHover }) => (
+  <li className="border-b border-border first:border-t">
+    <button
+      onClick={() => onSelect(project)}
+      onMouseEnter={() => onHover(project)}
+      onMouseLeave={() => onHover(null)}
+      onFocus={() => onHover(project)}
+      onBlur={() => onHover(null)}
+      className="group w-full text-left flex items-center gap-4 sm:gap-6 py-5 sm:py-7 px-1 sm:px-2 cursor-pointer"
+    >
+      <span className="font-mono text-xs sm:text-sm text-primary w-6 sm:w-8 shrink-0">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+
+      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden shrink-0 md:hidden bg-surface border border-border">
+        {project.image ? (
+          <img
+            src={project.image}
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-cover"
+            aria-hidden="true"
+          />
+        ) : (
+          <ProjectInitials project={project} />
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <h3 className="font-display text-xl sm:text-3xl lg:text-4xl font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+          {project.title}
+        </h3>
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          {project.tech.slice(0, 3).map((tech) => (
+            <span key={tech} className="font-mono text-[11px] text-muted-foreground">
+              {tech}
+              {project.tech.indexOf(tech) < Math.min(project.tech.length, 3) - 1 && (
+                <span className="text-border ml-1.5">/</span>
+              )}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {project.featured && (
+        <Badge variant="solid" className="hidden sm:inline-flex shrink-0">
+          <HiSparkles className="inline w-3 h-3 mr-1" aria-hidden="true" />
+          Featured
+        </Badge>
+      )}
+
+      <span className="hidden sm:block font-mono text-xs uppercase tracking-wide text-muted-foreground shrink-0 w-28 text-right">
+        {project.category}
+      </span>
+
+      <HiArrowUpRight
+        className="text-2xl sm:text-3xl text-primary shrink-0 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+        aria-hidden="true"
+      />
+    </button>
+  </li>
+);
+
 const Projects = () => {
   const [filter, setFilter] = useState("all");
   const [selectedProject, setSelectedProject] = useState(null);
+  const [hoveredProject, setHoveredProject] = useState(null);
+  const [canHoverPreview, setCanHoverPreview] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const listRef = useRef(null);
+  const previewRef = useRef(null);
 
-  const filteredProjects =
-    filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
+  const filteredProjects = filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
+
+  useEffect(() => {
+    setCanHoverPreview(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+  }, []);
+
+  useGSAP(
+    () => {
+      if (!listRef.current) return;
+      gsap.fromTo(
+        listRef.current.querySelectorAll("li"),
+        reducedMotion ? {} : { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.04, ease: "power2.out", overwrite: "auto" }
+      );
+    },
+    { dependencies: [filter, reducedMotion] }
+  );
+
+  useGSAP(
+    () => {
+      if (!canHoverPreview || reducedMotion || !previewRef.current) return;
+      const xTo = gsap.quickTo(previewRef.current, "x", { duration: 0.5, ease: "power3" });
+      const yTo = gsap.quickTo(previewRef.current, "y", { duration: 0.5, ease: "power3" });
+      const handleMove = (e) => {
+        xTo(e.clientX);
+        yTo(e.clientY);
+      };
+      window.addEventListener("mousemove", handleMove);
+      return () => window.removeEventListener("mousemove", handleMove);
+    },
+    { dependencies: [canHoverPreview, reducedMotion] }
+  );
+
+  useGSAP(
+    () => {
+      if (!canHoverPreview || reducedMotion || !previewRef.current) return;
+      gsap.to(previewRef.current, {
+        opacity: hoveredProject ? 1 : 0,
+        scale: hoveredProject ? 1 : 0.85,
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    },
+    { dependencies: [hoveredProject, canHoverPreview, reducedMotion] }
+  );
 
   return (
-    <Section id="projects" className="relative overflow-hidden bg-muted/20" ariaLabelledby="projects-heading">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-success/5 rounded-full blur-3xl" />
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="relative z-10"
-      >
-        <div className="text-center mb-12">
+    <Section id="projects" className="relative overflow-hidden bg-surface/30" ariaLabelledby="projects-heading">
+      <div className="flex flex-wrap items-end justify-between gap-6 mb-10">
+        <div>
           <Badge variant="solid" className="mb-4">
             <HiSparkles className="inline w-3.5 h-3.5 mr-1.5 -mt-0.5" aria-hidden="true" />
-            Portfolio
+            Full Archive
           </Badge>
-          <RevealText
-            id="projects-heading"
-            text="Featured Projects"
-            className="mb-4 text-foreground"
-          />
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg mb-8">
-            Real projects showcasing my work across frontend, full-stack, and data visualization
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-2" role="tablist" aria-label="Filter projects">
-            {PROJECT_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                role="tab"
-                aria-selected={filter === cat}
-                onClick={() => setFilter(cat)}
-                className={`px-4 py-2 min-h-10 rounded-full text-sm font-medium transition-all duration-300 capitalize ${
-                  filter === cat
-                    ? "bg-primary text-white shadow-lg shadow-primary/25"
-                    : "bg-surface text-muted-foreground hover:text-foreground border border-border hover:border-primary/30"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <RevealText id="projects-heading" text="Everything I've Shipped" className="text-foreground max-w-xl" />
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={filter}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.3 }}
-            className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8"
-          >
-            {filteredProjects.map((project, index) => (
-              <TiltCard key={project.id} delay={index * 0.1}>
-                <Card className="group h-full p-0 overflow-hidden">
-                  <div className="relative aspect-video overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent z-10 pointer-events-none" />
-                    <ProjectImage project={project} />
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter projects">
+          {PROJECT_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              role="tab"
+              aria-selected={filter === cat}
+              onClick={() => setFilter(cat)}
+              className={`px-4 py-2 min-h-10 rounded-full text-sm font-medium transition-colors duration-300 capitalize ${
+                filter === cat
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-surface text-muted-foreground hover:text-foreground border border-border hover:border-primary/30"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
 
-                    {project.featured && (
-                      <div className="absolute top-4 left-4 z-20">
-                        <Badge variant="solid" className="bg-primary/90 border-primary text-white">
-                          <HiSparkles className="inline w-3 h-3 mr-1" aria-hidden="true" />
-                          Featured
-                        </Badge>
-                      </div>
-                    )}
+      <ul ref={listRef}>
+        {filteredProjects.map((project, index) => (
+          <ProjectRow
+            key={project.id}
+            project={project}
+            index={index}
+            onSelect={setSelectedProject}
+            onHover={setHoveredProject}
+          />
+        ))}
+      </ul>
 
-                    <div className="absolute top-4 right-4 z-20">
-                      <Badge variant="muted">{project.category}</Badge>
-                    </div>
+      {canHoverPreview && !reducedMotion && (
+        <div
+          ref={previewRef}
+          aria-hidden="true"
+          className="pointer-events-none fixed left-0 top-0 z-[190] w-64 h-40 -translate-x-1/2 -translate-y-1/2 rounded-xl overflow-hidden border border-border shadow-2xl opacity-0 scale-[0.85]"
+        >
+          {hoveredProject?.image ? (
+            <img src={hoveredProject.image} alt="" className="w-full h-full object-cover" />
+          ) : hoveredProject ? (
+            <ProjectInitials project={hoveredProject} />
+          ) : null}
+        </div>
+      )}
 
-                    <div className="absolute inset-0 z-20 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-                      <button
-                        onClick={() => setSelectedProject(project)}
-                        className="p-3 bg-surface/80 backdrop-blur-sm rounded-full hover:bg-primary hover:text-white transition-all transform hover:scale-110 min-h-12 min-w-12 flex items-center justify-center"
-                        aria-label={`View case study for ${project.title}`}
-                      >
-                        <HiEye className="text-xl" />
-                      </button>
-                      {project.github && (
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-3 bg-surface/80 backdrop-blur-sm rounded-full hover:bg-primary hover:text-white transition-all transform hover:scale-110 min-h-12 min-w-12 flex items-center justify-center"
-                          aria-label={`View ${project.title} source code`}
-                        >
-                          <HiCode className="text-xl" />
-                        </a>
-                      )}
-                      {project.demo && (
-                        <a
-                          href={project.demo}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-3 bg-surface/80 backdrop-blur-sm rounded-full hover:bg-primary hover:text-white transition-all transform hover:scale-110 min-h-12 min-w-12 flex items-center justify-center"
-                          aria-label={`View ${project.title} live demo`}
-                        >
-                          <HiExternalLink className="text-xl" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-2">
-                      {project.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-5 leading-relaxed line-clamp-3">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.tech.map((tech) => (
-                        <Badge key={tech} variant="default">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                    <Button
-                      variant="ghost"
-                      className="!min-h-10 !px-0 text-primary hover:text-blue-400"
-                      onClick={() => setSelectedProject(project)}
-                    >
-                      Read case study →
-                    </Button>
-                  </div>
-                </Card>
-              </TiltCard>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-
-      <Dialog
-        open={!!selectedProject}
-        onClose={() => setSelectedProject(null)}
-        title={selectedProject?.title}
-      >
+      <Dialog open={!!selectedProject} onClose={() => setSelectedProject(null)} title={selectedProject?.title}>
         {selectedProject && (
           <div className="space-y-6">
             <div className="aspect-video rounded-lg overflow-hidden border border-border">

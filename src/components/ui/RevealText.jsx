@@ -1,22 +1,37 @@
-import { motion } from "motion/react";
+import { useRef } from "react";
+import { gsap, useGSAP } from "../../lib/gsap";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
-
-const container = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.06 },
-  },
-};
-
-const word = {
-  hidden: { opacity: 0, y: "100%" },
-  show: { opacity: 1, y: "0%", transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-};
 
 const RevealText = ({ as, text, className = "", id, once = true }) => {
   const Tag = as || "h2";
   const reducedMotion = useReducedMotion();
+  const containerRef = useRef(null);
   const words = text.split(" ");
+
+  useGSAP(
+    () => {
+      if (reducedMotion || !containerRef.current) return;
+      const wordEls = containerRef.current.querySelectorAll("[data-reveal-word]");
+
+      gsap.fromTo(
+        wordEls,
+        { yPercent: 100, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+            once,
+          },
+        }
+      );
+    },
+    { scope: containerRef, dependencies: [text, reducedMotion] }
+  );
 
   if (reducedMotion) {
     return (
@@ -27,23 +42,15 @@ const RevealText = ({ as, text, className = "", id, once = true }) => {
   }
 
   return (
-    <Tag id={id} className={className}>
-      <motion.span
-        className="inline"
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once, margin: "-80px" }}
-      >
-        {words.map((w, i) => (
-          <span key={`${w}-${i}`} className="inline-block overflow-hidden pb-[0.15em] align-bottom">
-            <motion.span variants={word} className="inline-block">
-              {w}
-              {i < words.length - 1 ? " " : ""}
-            </motion.span>
+    <Tag id={id} ref={containerRef} className={className}>
+      {words.map((w, i) => (
+        <span key={`${w}-${i}`} className="inline-block overflow-hidden pb-[0.15em] align-bottom">
+          <span data-reveal-word className="inline-block">
+            {w}
+            {i < words.length - 1 ? " " : ""}
           </span>
-        ))}
-      </motion.span>
+        </span>
+      ))}
     </Tag>
   );
 };

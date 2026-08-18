@@ -10,15 +10,16 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-background border-t border-border py-8 mt-auto">
+    <footer className="w-full bg-background border-t border-border py-10 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-center md:text-left">
-            <p className="text-muted-foreground text-sm">
+            <p className="font-display text-xl font-medium text-foreground">{SITE.shortName}</p>
+            <p className="text-muted-foreground text-sm mt-1">
               © {new Date().getFullYear()} {SITE.name}. All rights reserved.
             </p>
-            <p className="text-muted-foreground/70 text-xs mt-1">
-              Built with React, Vite &amp; Tailwind CSS
+            <p className="text-muted-foreground/60 text-xs mt-1 font-mono">
+              Built with React, GSAP &amp; Tailwind CSS
             </p>
           </div>
 
@@ -26,16 +27,16 @@ const Footer = () => {
             {socials.map((social) => {
               const SocialIcon = social.icon;
               return (
-              <a
-                key={social.label}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors text-xl min-h-10 min-w-10 flex items-center justify-center"
-                aria-label={social.label}
-              >
-                <SocialIcon />
-              </a>
+                <a
+                  key={social.label}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors text-xl min-h-10 min-w-10 flex items-center justify-center"
+                  aria-label={social.label}
+                >
+                  <SocialIcon />
+                </a>
               );
             })}
 
@@ -43,7 +44,7 @@ const Footer = () => {
               to="hero"
               smooth
               duration={500}
-              className="ml-2 p-2 rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors min-h-10 min-w-10 flex items-center justify-center"
+              className="ml-2 p-2 rounded-full border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors min-h-10 min-w-10 flex items-center justify-center cursor-pointer"
               aria-label="Back to top"
             >
               <FaArrowUp className="text-sm" />

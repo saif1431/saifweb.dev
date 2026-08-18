@@ -1,6 +1,8 @@
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
+import TickerStrip from "./components/TickerStrip";
+import SelectedWork from "./components/SelectedWork";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
@@ -8,6 +10,7 @@ import Experience from "./components/Experience";
 import Contact from "./components/Contact";
 import CustomCursor from "./components/ui/CustomCursor";
 import IntroLoader from "./components/ui/IntroLoader";
+import MarqueeBanner from "./components/ui/MarqueeBanner";
 
 function App() {
   return (
@@ -21,10 +24,14 @@ function App() {
       <Navbar />
       <main id="main-content" className="flex-grow">
         <Hero />
+        <TickerStrip />
+        <SelectedWork />
+        <MarqueeBanner text="Full Stack" />
         <About />
         <Skills />
-        <Projects />
         <Experience />
+        <Projects />
+        <MarqueeBanner text="Let's Talk" filled />
         <Contact />
       </main>
       <Footer />

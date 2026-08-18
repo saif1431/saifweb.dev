@@ -8,7 +8,7 @@ const Input = ({ label, id, error, className = "", ...props }) => {
       )}
       <input
         id={id}
-        className={`w-full min-h-12 px-4 py-2.5 bg-muted/50 border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${
+        className={`w-full min-h-12 px-4 py-2.5 bg-muted/40 border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all ${
           error ? "border-destructive focus:ring-destructive/50" : ""
         } ${className}`}
         aria-invalid={error ? "true" : undefined}
