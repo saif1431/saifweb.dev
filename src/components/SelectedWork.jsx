@@ -87,9 +87,40 @@ const SelectedWork = () => {
     () => {
       const track = trackRef.current;
       if (!track) return;
+      const panels = Array.from(track.querySelectorAll("[data-sw-panel]"));
+
+      // Center-focus: whichever panel is nearest the middle of the track sits at full size and
+      // brightness; everything either side eases down in scale and opacity, so the gallery reads
+      // like a coverflow — the further a card drifts from center, the further it recedes.
+      let focusEnabled = false;
+      let focusRaf = null;
+      const updateFocus = () => {
+        if (!focusEnabled) return;
+        const trackRect = track.getBoundingClientRect();
+        const centerX = trackRect.left + trackRect.width / 2;
+        panels.forEach((panel) => {
+          const r = panel.getBoundingClientRect();
+          const dist = Math.abs(r.left + r.width / 2 - centerX);
+          const normalized = gsap.utils.clamp(0, 1, dist / (trackRect.width / 2));
+          gsap.to(panel, {
+            scale: gsap.utils.mapRange(0, 1, 1, 0.88, normalized),
+            opacity: gsap.utils.mapRange(0, 1, 1, 0.5, normalized),
+            duration: 0.3,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        });
+      };
+      const scheduleFocusUpdate = () => {
+        if (focusRaf) return;
+        focusRaf = requestAnimationFrame(() => {
+          updateFocus();
+          focusRaf = null;
+        });
+      };
 
       gsap.fromTo(
-        track.querySelectorAll("[data-sw-panel]"),
+        panels,
         reducedMotion ? {} : { opacity: 0, y: 40 },
         {
           opacity: 1,
@@ -98,6 +129,11 @@ const SelectedWork = () => {
           stagger: 0.12,
           ease: "power3.out",
           scrollTrigger: { trigger: track, start: "top 85%", once: true },
+          onComplete: () => {
+            if (reducedMotion) return;
+            focusEnabled = true;
+            updateFocus();
+          },
         }
       );
 
@@ -108,6 +144,7 @@ const SelectedWork = () => {
         if (progressRef.current) {
           gsap.set(progressRef.current, { scaleX: Math.max(0.04, Math.min(1, ratio || 0.04)) });
         }
+        scheduleFocusUpdate();
       };
       updateProgress();
 
@@ -192,6 +229,7 @@ const SelectedWork = () => {
         window.removeEventListener("pointerup", handlePointerUp);
         window.removeEventListener("resize", updateProgress);
         momentumTween?.kill();
+        if (focusRaf) cancelAnimationFrame(focusRaf);
       };
     },
     { scope: trackRef, dependencies: [reducedMotion] }
