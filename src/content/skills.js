@@ -3,7 +3,7 @@ export const SKILL_CATEGORIES = [
     title: "Frontend",
     skills: [
       { name: "React", color: "#61DAFB" },
-      { name: "Next.js", color: "#ffffff" },
+      { name: "Next.js", color: null },
       { name: "TypeScript", color: "#3178C6" },
       { name: "JavaScript", color: "#F7DF1E" },
       { name: "HTML/CSS", color: "#E34F26" },
@@ -14,7 +14,7 @@ export const SKILL_CATEGORIES = [
     title: "Backend",
     skills: [
       { name: "Node.js", color: "#339933" },
-      { name: "Express", color: "#ffffff" },
+      { name: "Express", color: null },
       { name: "MongoDB", color: "#47A248" },
       { name: "PostgreSQL", color: "#4169E1" },
       { name: "REST APIs", color: "#3B82F6" },

@@ -1,6 +1,6 @@
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Hero from "./components/Hero";
+import Hero from "./components/hero/Hero";
 import TickerStrip from "./components/TickerStrip";
 import SelectedWork from "./components/SelectedWork";
 import About from "./components/About";

@@ -122,7 +122,7 @@ const Navbar = () => {
           scrolled || isOpen ? "bg-background/90 backdrop-blur-md py-3" : "bg-transparent py-5"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between">
+        <div className="max-w-[92rem] mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between">
           <div className="flex-shrink-0 cursor-pointer">
             <Link to="hero" smooth duration={500} onClick={closeMenu} aria-label="Go to top">
               <Logo />

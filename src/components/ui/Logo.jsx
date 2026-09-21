@@ -23,7 +23,7 @@ const Logo = ({ className = "" }) => {
             strokeLinecap="round"
           />
         </svg>
-        <span className="absolute -inset-px rounded-xl opacity-0 shadow-[0_0_20px_rgba(215,255,63,0.35)] transition-opacity duration-300 group-hover:opacity-100" />
+        <span className="absolute -inset-px rounded-xl opacity-0 shadow-[0_0_20px_rgba(249,115,22,0.35)] transition-opacity duration-300 group-hover:opacity-100" />
       </span>
 
       <span className="hidden font-mono text-lg leading-none tracking-tight sm:flex sm:items-center">

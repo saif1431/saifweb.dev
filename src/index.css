@@ -1,31 +1,42 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #d7ff3f;
-  --color-primary-foreground: #0b0b0d;
+  /* One color system for the whole site — orange brand accent on a dark neutral base. */
+  --color-primary: #f97316;
+  --color-primary-soft: #ff8a3d;
+  --color-primary-foreground: #0a0a0a;
 
-  --color-success: #d7ff3f;
-  --color-success-foreground: #0b0b0d;
+  --color-success: #22c55e;
+  --color-success-foreground: #052e14;
 
-  --color-background: #0b0b0d;
+  --color-background: #0a0a0a;
   --color-foreground: #f4f2ea;
 
-  --color-muted: #17181b;
-  --color-muted-foreground: #98988f;
+  --color-muted: #171717;
+  --color-muted-foreground: #a1a1aa;
 
-  --color-accent: #1b1b1e;
+  --color-accent: #1c1c1f;
   --color-accent-foreground: #f4f2ea;
 
-  --color-border: #2a2a2d;
+  --color-border: #27272a;
   --color-surface: #141416;
 
   --color-destructive: #ef4444;
+  --color-destructive-foreground: #fef2f2;
 
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Clash Display", "Inter", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   --spacing-section: 5rem;
+}
+
+/* Raw R G B triplets (no @theme registration needed — these back rgb(var(...) / alpha)
+   gradients in components, e.g. the Hero portrait scrim, that need an alpha-blended
+   background/foreground color rather than a flat hex value. */
+:root {
+  --bg-rgb: 10 10 10;
+  --fg-rgb: 244 242 234;
 }
 
 @layer base {
@@ -88,8 +99,8 @@
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(215, 255, 63, 0.45); }
-  50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(215, 255, 63, 0); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.45); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(249, 115, 22, 0); }
 }
 
 .animate-blink {
@@ -98,6 +109,15 @@
 
 .animate-pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float-y 5s ease-in-out infinite;
 }
 
 .skip-link {
@@ -142,7 +162,7 @@
 
 .text-stroke {
   -webkit-text-stroke-width: 1.5px;
-  -webkit-text-stroke-color: var(--stroke-color, rgba(244, 242, 234, 0.16));
+  -webkit-text-stroke-color: var(--stroke-color, rgb(var(--fg-rgb) / 0.16));
   color: transparent;
 }
 

@@ -11,7 +11,7 @@ export const SITE = {
   availability: "Open to opportunities",
   cvPath: "fullStack(Saif).pdf",
   cvFilename: "fullStack(Saif).pdf",
-  profileImage: "/portfolioImg2.jpg",
+  profileImage: "/saif_hero.png",
   social: {
     github: "https://github.com/saif1431",
     linkedin: "https://www.linkedin.com/in/muhammad-saif-ur-rehman-791170268/",
@@ -31,6 +31,26 @@ export const SITE = {
     url: "https://saifweb.dev",
     ogImage: "/portfolioImg2.jpg",
   },
+};
+
+export const HERO = {
+  kicker: SITE.availability,
+  headline: [
+    { text: "Building Digital" },
+    { text: "Products That" },
+    { text: "Actually ", accent: "Work." },
+  ],
+  subtext:
+    "Full Stack Developer focused on building modern web applications, scalable backend systems, and AI-powered digital experiences.",
+  proofLine: "React · Next.js · FastAPI · AI Agents",
+  ctaPrimary: { label: "View Projects", to: "work" },
+  ctaSecondary: { label: "Let's Work Together", to: "contact" },
+  bigText: "DEVELOPER",
+  badgeText: "Full Stack · AI/GenAI Developer",
+  cards: [
+    { title: "Full Stack", items: ["React", "Next.js", "FastAPI"] },
+    { title: "AI Systems", items: ["RAG", "AI Agents", "LLM Apps"] },
+  ],
 };
 
 export const ABOUT = {

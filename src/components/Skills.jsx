@@ -56,7 +56,7 @@ const buildRowItems = (skills) =>
     const Icon = SKILL_ICONS[skill.name] || SiCss3;
     return (
       <span key={skill.name} className="inline-flex items-center gap-4 mr-10 sm:mr-14">
-        <Icon style={{ color: skill.color }} aria-hidden="true" />
+        <Icon style={skill.color ? { color: skill.color } : undefined} aria-hidden="true" />
         <span className="text-foreground/85">{skill.name}</span>
       </span>
     );
