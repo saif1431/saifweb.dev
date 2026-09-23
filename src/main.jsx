@@ -1,13 +1,20 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import { BrowserRouter } from 'react-router-dom'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import "./portfolio.css";
+import App from "./App.jsx";
+import ProjectsPage from "./ProjectsPage.jsx";
+import ScrollToTop from "./ScrollToTop.jsx";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/work" element={<ProjectsPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </BrowserRouter>
   </StrictMode>,
-)
+);

@@ -1,16 +1,27 @@
-# React + Vite
+# Saif portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This ZIP contains the React/Vite portfolio. The home page shows four selected real projects with an **Explore All Projects** link. The full `/work` page shows 16 projects grouped into AI & ML, Full Stack, Web Experiences, Dashboards, and Concept Studies. Both pages use animated visual stages and clickable project detail dialogs.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```sh
+npm ci
+npm run dev
+npm run lint
+npm run build
+```
 
-## React Compiler
+Deploy through your usual GitHub → Vercel workflow after reviewing the changes. `vercel.json` rewrites `/work` to the React app so its URL also works when opened or refreshed directly. The ZIP contains source files and assets; it excludes `node_modules`, generated `dist`, and `.git`.
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Edit the portfolio
 
-## Expanding the ESLint configuration
+- `src/App.jsx`: home hero, four featured projects, about, experience and contact.
+- `src/ProjectsPage.jsx`: grouped full project page, field and technology filters, modal details.
+- `src/content/projects.js`: the twelve existing real projects, descriptions, tech stacks, screenshots, and demo links.
+- `src/content/concepts.js` and `src/components/portfolio/ConceptProjects.jsx`: four visual concept studies from the original design.
+- `src/components/portfolio/ProjectCard.jsx` and `src/portfolio.css`: designed screenshot stages, responsiveness and interaction styles. Project cards animate position/scale on scroll and remain fully visible.
+- `public/projects/*.webp`: original screenshots and three `*-poster.webp` stills extracted from supplied videos. The LangChain chatbot has no image or video in the original ZIP, so its card uses editable CSS artwork.
+- `public/portfolioImg3.png`: hero portrait. Change its path and alt text in `src/App.jsx` if replaced.
+- `src/content/site.js`: email and social links. The contact form uses the existing FormSubmit AJAX endpoint, which must be configured for that email.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The additional `CHANGE_REQUEST_PROMPT.md` states the complete redesign request in one reusable prompt.
