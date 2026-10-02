@@ -110,6 +110,17 @@ select:focus-visible,
   letter-spacing: -2.2px;
   white-space: nowrap;
 }
+.nav .wordmark {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.nav-logo {
+  display: block;
+  width: 180px;
+  height: 60px;
+  object-fit: contain;
+}
 .wordmark span {
   font:
     500 11px/1 "DM Sans",
@@ -1646,6 +1657,10 @@ select:focus-visible,
   }
   .wordmark {
     font-size: 24px;
+  }
+  .nav-logo {
+    width: 120px;
+    height: 40px;
   }
   .nav-links {
     gap: 18px;

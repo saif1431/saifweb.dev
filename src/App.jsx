@@ -225,7 +225,7 @@ export default function App() {
         <nav className="nav shell" aria-label="Main navigation">
           <a className="wordmark" href="#top" aria-label="Saif, back to top">
             {/* SAIF<span>®</span> */}
-          <img src="/public/logo2.png" alt="" />
+            <img className="nav-logo" src="/logo2 (2).png" alt="Saif.dev" width="2172" height="724" />
           </a>
           <div className="nav-center">
             <span className="availability-dot" aria-hidden="true"></span>{" "}

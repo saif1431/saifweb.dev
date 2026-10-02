@@ -46,7 +46,7 @@ export const PROJECTS = [
     github: null,
     demo: "https://pak-live-job-5i67.vercel.app/",
     video: null,
-    image: "/projects/pakjoblive.webp",
+    image: "/projects/pakjoblive.webp.png",
     gradient: "from-orange-600/40 to-red-900/60",
   },
   {
